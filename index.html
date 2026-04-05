@@ -17,6 +17,7 @@
                 <i class="fas fa-microchip"></i>
                 <h2>DracoTech<span> Reparaciones</span></h2>
             </div>
+            <!-- Login Form (Original) -->
             <form id="login-form">
                 <div class="auth-group">
                     <label for="username">Usuario</label>
@@ -27,8 +28,29 @@
                     <input type="password" id="password" placeholder="••••••••" required>
                 </div>
                 <button type="submit" id="auth-btn">Ingresar</button>
+                <p class="auth-toggle">¿No tienes cuenta? <a href="#" id="show-register">Crear cuenta</a></p>
             </form>
+
+            <!-- Register Form (New) -->
+            <form id="register-form" class="hidden">
+                <div class="auth-group">
+                    <label for="reg-fullname">Nombre Completo</label>
+                    <input type="text" id="reg-fullname" placeholder="Ej. Pedro Picapiedra" required>
+                </div>
+                <div class="auth-group">
+                    <label for="reg-username">Usuario</label>
+                    <input type="text" id="reg-username" placeholder="nombre-usuario" required>
+                </div>
+                <div class="auth-group">
+                    <label for="reg-password">Contraseña</label>
+                    <input type="password" id="reg-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" id="reg-btn">Registrarse</button>
+                <p class="auth-toggle">¿Ya tienes cuenta? <a href="#" id="show-login">Iniciar sesión</a></p>
+            </form>
+
             <p id="error-msg" class="hidden">Usuario o contraseña inválidos</p>
+            <p id="success-msg" class="hidden success">Cuenta creada con éxito. Inicia sesión.</p>
             <p class="login-hint">Credenciales demo: admin / password123</p>
         </div>
     </div>

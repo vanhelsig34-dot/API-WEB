@@ -90,6 +90,35 @@ app.post('/login', async (req, res) => {
     }
 });
 
+// Register API endpoint
+app.post('/register', async (req, res) => {
+    const { username, password, fullName } = req.body;
+
+    if (!username || !password || !fullName) {
+        return res.status(400).json({ success: false, message: 'Todos los campos son obligatorios' });
+    }
+
+    try {
+        // Default role for new users is 'Usuario'
+        const result = await pool.query(
+            'INSERT INTO users (username, password, full_name, role) VALUES ($1, $2, $3, $4) RETURNING username',
+            [username, password, fullName, 'Usuario']
+        );
+
+        res.json({ 
+            success: true, 
+            message: 'Cuenta creada exitosamente',
+            user: result.rows[0].username 
+        });
+    } catch (err) {
+        if (err.code === '23505') { // Unique constraint violation
+            return res.status(409).json({ success: false, message: 'El nombre de usuario ya existe' });
+        }
+        console.error('Registration error:', err);
+        res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+});
+
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });

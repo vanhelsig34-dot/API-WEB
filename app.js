@@ -80,15 +80,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Login form handling
     const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const showRegister = document.getElementById('show-register');
+    const showLogin = document.getElementById('show-login');
+    const successMsg = document.getElementById('success-msg');
+
     const errorMsg = document.getElementById('error-msg');
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
+
+    // Toggle Forms
+    if (showRegister) {
+        showRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            errorMsg.classList.add('hidden');
+            successMsg.classList.add('hidden');
+        });
+    }
+
+    if (showLogin) {
+        showLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            registerForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            errorMsg.classList.add('hidden');
+            successMsg.classList.add('hidden');
+        });
+    }
 
     if (loginForm) {
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            errorMsg.classList.add('hidden');
             
             const username = usernameInput.value;
             const password = passwordInput.value;
@@ -107,23 +134,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     loginScreen.classList.add('hidden');
                     appContainer.classList.remove('hidden');
                     
-                    // Update user profile in header if needed
-                    const profilePic = document.querySelector('.profile-pic');
-                    if (profilePic && data.fullName) {
-                        profilePic.textContent = data.fullName.charAt(0);
-                        profilePic.title = data.fullName;
-                    }
+                    updateProfileUI({
+                        fullName: data.fullName,
+                        role: data.role
+                    });
+
                     // Save to localStorage for persistence
                     localStorage.setItem('techApiUser', JSON.stringify({
                         username: data.user,
                         fullName: data.fullName,
                         role: data.role
                     }));
-                    
-                    updateProfileUI({
-                        fullName: data.fullName,
-                        role: data.role
-                    });
                     
                     console.log('Login successful:', data.fullName);
                 } else {
@@ -132,6 +153,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (err) {
                 console.error('Login request failed:', err);
+                errorMsg.textContent = 'Error de conexión con el servidor';
+                errorMsg.classList.remove('hidden');
+            }
+        });
+    }
+
+    // Register form handling
+    if (registerForm) {
+        const regFullName = document.getElementById('reg-fullname');
+        const regUsername = document.getElementById('reg-username');
+        const regPassword = document.getElementById('reg-password');
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMsg.classList.add('hidden');
+            successMsg.classList.add('hidden');
+
+            const fullName = regFullName.value;
+            const username = regUsername.value;
+            const password = regPassword.value;
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullName, username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    successMsg.classList.remove('hidden');
+                    registerForm.reset();
+                    // Auto-switch to login after 1.5s
+                    setTimeout(() => {
+                        showLogin.click();
+                    }, 1500);
+                } else {
+                    errorMsg.textContent = data.message || 'Error al crear cuenta';
+                    errorMsg.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error('Registration request failed:', err);
                 errorMsg.textContent = 'Error de conexión con el servidor';
                 errorMsg.classList.remove('hidden');
             }

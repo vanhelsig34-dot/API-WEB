@@ -109,7 +109,7 @@ body {
     border-color: var(--accent-color);
 }
 
-#auth-btn {
+#auth-btn, #reg-btn {
     margin-top: 10px;
     background-color: var(--accent-color);
     color: #000;
@@ -122,14 +122,37 @@ body {
     transition: background-color 0.2s;
 }
 
-#auth-btn:hover {
+#auth-btn:hover, #reg-btn:hover {
     background-color: var(--accent-hover);
 }
 
-#error-msg {
+.auth-toggle {
     margin-top: 16px;
-    color: #ff4d4d;
     font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.auth-toggle a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-toggle a:hover {
+    text-decoration: underline;
+}
+
+#error-msg, #success-msg {
+    margin-top: 16px;
+    font-size: 0.9rem;
+}
+
+#error-msg {
+    color: #ff4d4d;
+}
+
+#success-msg {
+    color: #4dfa7e;
 }
 
 .login-hint {
