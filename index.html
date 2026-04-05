@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DracoTech Reparaciones - Gestión Técnica</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div id="login-screen">
+        <div class="login-wrapper">
+            <div class="login-header">
+                <i class="fas fa-microchip"></i>
+                <h2>DracoTech<span> Reparaciones</span></h2>
+            </div>
+            <form id="login-form">
+                <div class="auth-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" placeholder="admin" required>
+                </div>
+                <div class="auth-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" id="auth-btn">Ingresar</button>
+            </form>
+            <p id="error-msg" class="hidden">Usuario o contraseña inválidos</p>
+            <p class="login-hint">Credenciales demo: admin / password123</p>
+        </div>
+    </div>
+
+    <div id="app" class="hidden">
+        <!-- Header -->
+        <header>
+            <div class="header-left">
+                <button class="icon-btn" id="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a href="#" class="logo">
+                    <i class="fas fa-microchip"></i>
+                    DracoTech<span> Reparaciones</span>
+                </a>
+            </div>
+
+            <div class="header-center">
+                <div class="search-container">
+                    <input type="text" placeholder="Buscar servicios o tutoriales..." id="search-input">
+                    <button class="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <button class="icon-btn"><i class="fas fa-plus"></i></button>
+                <button class="icon-btn"><i class="fas fa-bell"></i></button>
+                <div class="profile-container">
+                    <div class="profile-pic" id="profile-trigger">A</div>
+                    <div id="profile-menu" class="hidden">
+                        <div class="menu-header">
+                            <div class="menu-avatar">A</div>
+                            <div class="menu-user-info">
+                                <p id="menu-full-name">Cargando...</p>
+                                <p id="menu-role">@usuario</p>
+                            </div>
+                        </div>
+                        <div class="menu-divider"></div>
+                        <div class="menu-items">
+                            <button class="menu-item" id="switch-account-btn">
+                                <i class="fas fa-user-friends"></i>
+                                <span>Cambiar de cuenta</span>
+                            </button>
+                            <button class="menu-item" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Cerrar sesión</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <sidebar id="sidebar">
+            <div class="sidebar-section">
+                <a href="#" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-toolbox"></i>
+                    <span>Herramientas</span>
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="section-title">Historial</h3>
+                <div id="search-history">
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-history"></i>
+                        <span>Cómo arreglar pantalla azul</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-history"></i>
+                        <span>Instalar driver Nvidia</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-history"></i>
+                        <span>Recuperar archivos SSD</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-history"></i>
+                        <span>Optimización Windows 11</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <i class="fas fa-history"></i>
+                        <span>BIOS Update Gigabyte</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="section-title">Favoritos</h3>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-microchip"></i>
+                    <span>Diagnóstico RAM</span>
+                </a>
+
+            </div>
+        </sidebar>
+
+        <!-- Main Content -->
+        <main>
+            <div class="dashboard-grid">
+                <!-- Card 1: Servicios Técnicos -->
+                <div class="card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80"
+                            alt="Servicios Técnicos">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div class="card-content">
+                        <h2 class="card-title">Gestión de Servicios Técnicos</h2>
+                        <p class="card-description">
+                            Administra órdenes de trabajo, diagnósticos de hardware y el historial de reparaciones de
+                            tus clientes de manera centralizada.
+                        </p>
+                        <div class="card-footer">
+                            <button class="btn-primary">Ir a Servicios</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Qué deseas aprender -->
+                <div class="card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80"
+                            alt="Aprender">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="card-content">
+                        <h2 class="card-title">¿Qué deseas aprender hoy?</h2>
+                        <p class="card-description">
+                            Descubre fácilmente guías de sitios oficiales y tutoriales especializados en software y
+                            hardware.
+                        </p>
+                        <div class="card-footer">
+                            <button class="btn-primary">Aprender</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="logout-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <h3>¿Cerrar sesión?</h3>
+            <p>Se guardarán tus cambios, pero deberás ingresar tus credenciales la próxima vez.</p>
+            <div class="modal-actions">
+                <button id="cancel-logout" class="btn-secondary">Cancelar</button>
+                <button id="confirm-logout" class="btn-primary-modal">Cerrar Sesión</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
