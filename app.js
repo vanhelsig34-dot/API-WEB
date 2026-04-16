@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (err) {
                 console.error('Login request failed:', err);
-                errorMsg.textContent = 'Error de conexión con el servidor';
+                errorMsg.textContent = 'Error de conexión con el servidor (Ver consola)';
                 errorMsg.classList.remove('hidden');
             }
         });
@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (err) {
                 console.error('Registration request failed:', err);
-                errorMsg.textContent = 'Error de conexión con el servidor';
+                errorMsg.textContent = 'Error de conexión con el servidor (Ver consola)';
                 errorMsg.classList.remove('hidden');
             }
         });

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-web
+  namespace: cide-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-web
+  template:
+    metadata:
+      labels:
+        app: api-web
+    spec:
+      containers:
+        - name: app
+          image: api_web_app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_HOST
+              value: "db"
+            - name: DB_USER
+              value: "admin"
+            - name: DB_PASSWORD
+              value: "password123"
+            - name: DB_NAME
+              value: "techapi_db"
+            - name: DB_PORT
+              value: "5432"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 2
+            periodSeconds: 5

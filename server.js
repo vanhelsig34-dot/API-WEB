@@ -16,11 +16,8 @@ app.use(express.static(__dirname));
 
 // DB connection pool (using environment variables from docker-compose)
 const pool = new Pool({
-  user: process.env.DB_USER || 'admin',
-  password: process.env.DB_PASSWORD || 'password123',
-  host: process.env.DB_HOST || 'db', // The name of the db service in docker-compose
-  database: process.env.DB_NAME || 'techapi_db',
-  port: parseInt(process.env.DB_PORT || '5432'),
+    connectionString: process.env.DATABASE_URL || `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+    connectionTimeoutMillis: 5000 // 5 seconds timeout
 });
 
 // Seed the database on startup
@@ -41,7 +38,9 @@ async function seedDatabase() {
                 role TEXT
             );
         `);
-        console.log('Checked users table existence.');
+        // Ensure role column exists if table was created before
+        await pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT;');
+        console.log('Checked users table and role column.');
 
         // Load users from JSON
         const userData = JSON.parse(fs.readFileSync(path.join(__dirname, 'user_data.json'), 'utf8'));
@@ -60,8 +59,6 @@ async function seedDatabase() {
         console.log('Note: Ensure Docker container is running (docker-compose up -d)');
     }
 }
-
-seedDatabase();
 
 // Login API endpoint
 app.post('/login', async (req, res) => {
@@ -119,6 +116,9 @@ app.post('/register', async (req, res) => {
     }
 });
 
+// Start server immediately
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
+    // Initialize database in background
+    seedDatabase();
 });
