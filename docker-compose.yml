@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: api_web_app
     ports:
       - "3000:3000"
@@ -14,7 +16,7 @@ services:
       - DB_PORT=5432
     volumes:
       - .:/app
-      - /app/node_modules
+      - /app/backend/node_modules
     depends_on:
       - db
 
@@ -30,5 +32,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  sonarqube:
+    image: sonarqube:lts-community
+    container_name: sonarqube_server
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_extensions:/opt/sonarqube/extensions
+
 volumes:
   postgres_data:
+  sonarqube_data:
+  sonarqube_logs:
+  sonarqube_extensions:
