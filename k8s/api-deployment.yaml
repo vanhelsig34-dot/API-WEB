@@ -17,6 +17,9 @@ spec:
         - name: app
           image: api_web_app:latest
           imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 3000
           env:
@@ -30,6 +33,8 @@ spec:
               value: "techapi_db"
             - name: DB_PORT
               value: "5432"
+            - name: JWT_SECRET
+              value: "b63c638e4a9e14a1e9c5a17b6a18d9f1e1b4c9a8"
           livenessProbe:
             httpGet:
               path: /

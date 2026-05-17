@@ -9,11 +9,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DB_HOST=db
-      - DB_USER=admin
-      - DB_PASSWORD=password123
-      - DB_NAME=techapi_db
-      - DB_PORT=5432
+      - DB_HOST=${DB_HOST:-db}
+      - DB_USER=${DB_USER:-admin}
+      - DB_PASSWORD=${DB_PASSWORD:-password123}
+      - DB_NAME=${DB_NAME:-techapi_db}
+      - DB_PORT=${DB_PORT:-5432}
     volumes:
       - .:/app
       - /app/backend/node_modules
@@ -24,13 +24,13 @@ services:
     image: postgres:15-alpine
     container_name: api_web_db
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password123
-      POSTGRES_DB: techapi_db
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password123}
+      POSTGRES_DB: ${DB_NAME:-techapi_db}
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./database/data:/var/lib/postgresql/data
 
   sonarqube:
     image: sonarqube:lts-community
@@ -44,8 +44,32 @@ services:
       - sonarqube_logs:/opt/sonarqube/logs
       - sonarqube_extensions:/opt/sonarqube/extensions
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: api_web_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - app
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: api_web_grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+    depends_on:
+      - db
+
 volumes:
-  postgres_data:
   sonarqube_data:
   sonarqube_logs:
   sonarqube_extensions:
+  grafana_data:
