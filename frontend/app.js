@@ -23,13 +23,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const appContainer = document.getElementById('app');
     const loginScreen = document.getElementById('login-screen');
 
-    // Session Check: Prevent relogin on refresh
+    // Session Check: Expiration after 8 hours
+    const SESSION_TIMEOUT = 8 * 60 * 60 * 1000; 
     const savedUser = localStorage.getItem('techApiUser');
     if (savedUser) {
         const userData = JSON.parse(savedUser);
-        loginScreen.classList.add('hidden');
-        appContainer.classList.remove('hidden');
-        updateProfileUI(userData);
+        const now = Date.now();
+        
+        // If session is still valid (less than 8 hours)
+        if (userData.timestamp && (now - userData.timestamp < SESSION_TIMEOUT)) {
+            loginScreen.classList.add('hidden');
+            appContainer.classList.remove('hidden');
+            updateProfileUI(userData);
+        } else {
+            // Session expired or invalid
+            localStorage.removeItem('techApiUser');
+            console.log('Sesión expirada después de 8 horas.');
+        }
     }
 
     function updateProfileUI(userData) {
@@ -44,6 +54,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (menuAvatar) menuAvatar.textContent = initial;
             if (menuFullName) menuFullName.textContent = userData.fullName;
             if (menuRole) menuRole.textContent = userData.role || 'Usuario';
+        }
+
+        // Role-based Access Control for UI
+        const navHerramientas = document.getElementById('nav-herramientas');
+        if (navHerramientas) {
+            if (userData.role === 'Administrador' || userData.role === 'Admin') {
+                navHerramientas.classList.remove('hidden');
+            } else {
+                navHerramientas.classList.add('hidden');
+            }
         }
     }
 
@@ -139,11 +159,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         role: data.role
                     });
 
-                    // Save to localStorage for persistence
+                    // Save to localStorage for persistence with timestamp
                     localStorage.setItem('techApiUser', JSON.stringify({
                         username: data.user,
                         fullName: data.fullName,
-                        role: data.role
+                        role: data.role,
+                        token: data.token,
+                        timestamp: Date.now()
                     }));
                     
                     console.log('Login successful:', data.fullName);
@@ -278,4 +300,107 @@ document.addEventListener('DOMContentLoaded', () => {
             ui.handleSearch(query);
         });
     });
+
+    // Section transition logic
+    const btnIrServicios = document.getElementById('btn-ir-servicios');
+    const btnVolverServicios = document.getElementById('btn-volver-servicios');
+    const dashboardGrid = document.querySelector('.dashboard-grid');
+    const serviciosSection = document.getElementById('servicios-section');
+
+    if (btnIrServicios && dashboardGrid && serviciosSection) {
+        btnIrServicios.addEventListener('click', () => {
+            dashboardGrid.classList.add('hidden');
+            serviciosSection.classList.remove('hidden');
+            // Scroll to top when changing section
+            window.scrollTo(0, 0);
+        });
+    }
+
+    if (btnVolverServicios && dashboardGrid && serviciosSection) {
+        btnVolverServicios.addEventListener('click', () => {
+            serviciosSection.classList.add('hidden');
+            dashboardGrid.classList.remove('hidden');
+        });
+    }
+
+    // Collapsible Categories Logic
+    const setupCollapsible = (headerId, gridId, iconId) => {
+        const header = document.getElementById(headerId);
+        const grid = document.getElementById(gridId);
+        const icon = document.getElementById(iconId);
+
+        if (header && grid && icon) {
+            header.addEventListener('click', () => {
+                grid.classList.toggle('hidden-grid');
+                icon.classList.toggle('collapsed-icon');
+            });
+        }
+    };
+
+    setupCollapsible('header-repuestos', 'grid-repuestos', 'icon-repuestos');
+    setupCollapsible('header-servicios', 'grid-servicios', 'icon-servicios');
+
+    // Sidebar Navigation Logic
+    const navInicio = document.getElementById('nav-inicio');
+    const navHerramientas = document.getElementById('nav-herramientas');
+    const herramientasSection = document.getElementById('herramientas-section');
+
+    const resetViews = () => {
+        dashboardGrid.classList.add('hidden');
+        serviciosSection.classList.add('hidden');
+        herramientasSection.classList.add('hidden');
+    };
+
+    if (navInicio) {
+        navInicio.addEventListener('click', (e) => {
+            e.preventDefault();
+            resetViews();
+            dashboardGrid.classList.remove('hidden');
+        });
+    }
+
+    if (navHerramientas) {
+        navHerramientas.addEventListener('click', (e) => {
+            e.preventDefault();
+            resetViews();
+            herramientasSection.classList.remove('hidden');
+        });
+    }
+
+    // --- Tools Functionality ---
+
+    // 1. Password Generator
+    const btnGenPassword = document.getElementById('btn-gen-password');
+    const genPasswordOutput = document.getElementById('gen-password-output');
+
+    if (btnGenPassword && genPasswordOutput) {
+        btnGenPassword.addEventListener('click', () => {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+            let password = "";
+            for (let i = 0; i < 16; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            genPasswordOutput.value = password;
+        });
+    }
+
+    // 2. Storage Calculator
+    const btnCalcStorage = document.getElementById('btn-calc-storage');
+    const storageInput = document.getElementById('storage-input');
+    const storageResult = document.getElementById('storage-result');
+
+    if (btnCalcStorage && storageInput && storageResult) {
+        btnCalcStorage.addEventListener('click', () => {
+            const gigabytes = parseFloat(storageInput.value);
+            if (!isNaN(gigabytes) && gigabytes > 0) {
+                // Calculation: Manufacturers use 1000^3 bytes, Windows uses 1024^3 bytes
+                // 1 GB advertised = 1,000,000,000 bytes
+                // In Windows: 1,000,000,000 / (1024^3) = ~0.9313 GB
+                const realGiB = gigabytes * Math.pow(1000, 3) / Math.pow(1024, 3);
+                storageResult.textContent = `Capacidad Real (Windows): ${realGiB.toFixed(2)} GB`;
+            } else {
+                storageResult.textContent = 'Por favor, ingresa un número válido.';
+            }
+        });
+    }
 });

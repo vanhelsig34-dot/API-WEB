@@ -109,11 +109,11 @@
         <!-- Sidebar -->
         <sidebar id="sidebar">
             <div class="sidebar-section">
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" id="nav-inicio">
                     <i class="fas fa-home"></i>
                     <span>Inicio</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" id="nav-herramientas">
                     <i class="fas fa-toolbox"></i>
                     <span>Herramientas</span>
                 </a>
@@ -172,7 +172,7 @@
                             tus clientes de manera centralizada.
                         </p>
                         <div class="card-footer">
-                            <button class="btn-primary">Ir a Servicios</button>
+                            <button id="btn-ir-servicios" class="btn-primary">Ir a Servicios</button>
                         </div>
                     </div>
                 </div>
@@ -192,6 +192,167 @@
                         </p>
                         <div class="card-footer">
                             <button class="btn-primary">Aprender</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Servicios Técnicos View -->
+            <div id="servicios-section" class="hidden">
+                <div class="section-header">
+                    <button class="icon-btn back-btn" id="btn-volver-servicios">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <h1>Gestión de Servicios Técnicos</h1>
+                </div>
+
+                <!-- Categoría: Repuestos -->
+                <div class="category-section">
+                    <div class="category-header" id="header-repuestos" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=1000&q=80')">
+                        <h2 class="category-title"><i class="fas fa-microchip"></i> Venta de Repuestos para Computadores</h2>
+                        <i class="fas fa-chevron-up toggle-icon collapsed-icon" id="icon-repuestos"></i>
+                    </div>
+                    <div class="items-grid hidden-grid" id="grid-repuestos">
+                        <div class="item-card">
+                            <div class="item-img" style="background-image: url('https://images.unsplash.com/photo-1531492746076-161ca9bcad58?w=500&q=80')"></div>
+                            <div class="item-info">
+                                <h3>SSD NVMe M.2 1TB</h3>
+                                <p>Unidad de estado sólido de alta velocidad (3500MB/s) para máxima eficiencia.</p>
+                                <span class="price">$350.000 COP</span>
+                                <button class="btn-primary-sm"><i class="fas fa-cart-plus"></i> Agregar al carrito</button>
+                            </div>
+                        </div>
+                        <div class="item-card">
+                            <div class="item-img" style="background-image: url('https://images.unsplash.com/photo-1541029071515-84cc54f84dc5?w=500&q=80')"></div>
+                            <div class="item-info">
+                                <h3>Memoria RAM 16GB DDR4</h3>
+                                <p>Módulo de memoria Corsair Vengeance 3200MHz para alto rendimiento.</p>
+                                <span class="price">$220.000 COP</span>
+                                <button class="btn-primary-sm"><i class="fas fa-cart-plus"></i> Agregar al carrito</button>
+                            </div>
+                        </div>
+                        <div class="item-card">
+                            <div class="item-img" style="background-image: url('https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500&q=80')"></div>
+                            <div class="item-info">
+                                <h3>Tarjeta Gráfica RTX 3060</h3>
+                                <p>GPU Nvidia GeForce RTX 3060 12GB GDDR6 ideal para diseño y gaming.</p>
+                                <span class="price">$1.650.000 COP</span>
+                                <button class="btn-primary-sm"><i class="fas fa-cart-plus"></i> Agregar al carrito</button>
+                            </div>
+                        </div>
+                        <div class="item-card">
+                            <div class="item-img" style="background-image: url('https://images.unsplash.com/photo-1591488320449-011701bb6704?w=500&q=80')"></div>
+                            <div class="item-info">
+                                <h3>Procesador Intel Core i7</h3>
+                                <p>Procesador de 12va generación, 12 núcleos y hasta 4.9GHz.</p>
+                                <span class="price">$1.400.000 COP</span>
+                                <button class="btn-primary-sm"><i class="fas fa-cart-plus"></i> Agregar al carrito</button>
+                            </div>
+                        </div>
+                        <div class="item-card">
+                            <div class="item-img" style="background-image: url('https://images.unsplash.com/photo-1587202372634-32705e3bf49c?w=500&q=80')"></div>
+                            <div class="item-info">
+                                <h3>Fuente de Poder 650W</h3>
+                                <p>Fuente certificada 80 Plus Bronze con protección de voltaje y sobrecarga.</p>
+                                <span class="price">$280.000 COP</span>
+                                <button class="btn-primary-sm"><i class="fas fa-cart-plus"></i> Agregar al carrito</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categoría: Servicios -->
+                <div class="category-section mt-40">
+                    <div class="category-header" id="header-servicios" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1000&q=80')">
+                        <h2 class="category-title"><i class="fas fa-tools"></i> Servicios Técnicos de Reparación</h2>
+                        <i class="fas fa-chevron-up toggle-icon collapsed-icon" id="icon-servicios"></i>
+                    </div>
+                    <div class="items-grid hidden-grid" id="grid-servicios">
+                        <div class="item-card service">
+                            <div class="service-icon"><i class="fas fa-hdd"></i></div>
+                            <div class="item-info">
+                                <h3>Formateo e Instalación de OS</h3>
+                                <p>Instalación limpia de Windows/Linux, drivers y configuración inicial.</p>
+                                <div class="service-meta">
+                                    <span><i class="fas fa-clock"></i> 2 a 3 horas</span>
+                                    <span><i class="fas fa-tag"></i> $60.000 COP</span>
+                                </div>
+                                <button class="btn-secondary-sm">Ver detalles</button>
+                            </div>
+                        </div>
+                        <div class="item-card service">
+                            <div class="service-icon"><i class="fas fa-fan"></i></div>
+                            <div class="item-info">
+                                <h3>Mantenimiento Preventivo</h3>
+                                <p>Limpieza interna profunda, cambio de pasta térmica y revisión térmica.</p>
+                                <div class="service-meta">
+                                    <span><i class="fas fa-clock"></i> 1.5 horas</span>
+                                    <span><i class="fas fa-tag"></i> $80.000 COP</span>
+                                </div>
+                                <button class="btn-secondary-sm">Ver detalles</button>
+                            </div>
+                        </div>
+                        <div class="item-card service">
+                            <div class="service-icon"><i class="fas fa-laptop-medical"></i></div>
+                            <div class="item-info">
+                                <h3>Reparación de Hardware</h3>
+                                <p>Diagnóstico y cambio de piezas defectuosas (pantallas, teclados, baterías).</p>
+                                <div class="service-meta">
+                                    <span><i class="fas fa-clock"></i> Variable</span>
+                                    <span><i class="fas fa-tag"></i> Desde $50.000 COP</span>
+                                </div>
+                                <button class="btn-secondary-sm">Ver detalles</button>
+                            </div>
+                        </div>
+                        <div class="item-card service">
+                            <div class="service-icon"><i class="fas fa-database"></i></div>
+                            <div class="item-info">
+                                <h3>Recuperación de Datos</h3>
+                                <p>Rescate de información de discos duros o unidades de almacenamiento dañadas.</p>
+                                <div class="service-meta">
+                                    <span><i class="fas fa-clock"></i> 2 a 24 horas</span>
+                                    <span><i class="fas fa-tag"></i> Desde $150.000 COP</span>
+                                </div>
+                                <button class="btn-secondary-sm">Ver detalles</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Herramientas View -->
+            <div id="herramientas-section" class="hidden">
+                <div class="section-header">
+                    <h1><i class="fas fa-toolbox" style="color: var(--accent-color);"></i> Herramientas Técnicas</h1>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <!-- Generador de Contraseñas -->
+                    <div class="card">
+                        <div class="card-content">
+                            <h2 class="card-title"><i class="fas fa-key" style="color: var(--accent-color);"></i> Generador de Claves Seguras</h2>
+                            <p class="card-description">
+                                Crea contraseñas criptográficas fuertes para routers, BIOS o sistemas de clientes.
+                            </p>
+                            <div class="auth-group" style="margin-top: 16px;">
+                                <input type="text" id="gen-password-output" readonly placeholder="Presiona generar..." style="text-align: center; font-size: 1.2rem; letter-spacing: 2px;">
+                                <button class="btn-primary" id="btn-gen-password" style="margin-top: 12px;">Generar Contraseña</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calculadora de Almacenamiento -->
+                    <div class="card">
+                        <div class="card-content">
+                            <h2 class="card-title"><i class="fas fa-hdd" style="color: var(--accent-color);"></i> Conversor de Almacenamiento</h2>
+                            <p class="card-description">
+                                Calcula la capacidad real formateada de discos duros y SSDs para explicárselo al cliente.
+                            </p>
+                            <div class="auth-group" style="margin-top: 16px;">
+                                <input type="number" id="storage-input" placeholder="GB anunciados (Ej: 500 o 1000)">
+                                <button class="btn-primary" id="btn-calc-storage" style="margin-top: 12px;">Calcular Capacidad Real</button>
+                            </div>
+                            <p id="storage-result" style="margin-top: 16px; font-weight: bold; color: #4dfa7e; text-align: center; font-size: 1.2rem;"></p>
                         </div>
                     </div>
                 </div>
