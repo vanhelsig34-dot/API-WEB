@@ -186,20 +186,6 @@ Si cuentas con una instalación de **Argo CD** en tu clúster de Kubernetes, pue
 
 ---
 
-## 🔑 Credenciales por Defecto para Pruebas
-
-Para facilitarte el acceso inmediato a la aplicación, la base de datos se siembra automáticamente al iniciar el backend con los siguientes usuarios de prueba (extraídos de [database/user_data.json](database/user_data.json)):
-
-| Aplicación / Servicio | Usuario / Username | Contraseña / Password | Rol / Propósito |
-| :--- | :--- | :--- | :--- |
-| **Portal DracoTech** | `admin` | `password123` | Administrador |
-| **Portal DracoTech** | `tecnico1` | `user2024` | Técnico (Usuario estándar) |
-| **Base de Datos (PostgreSQL)** | `admin` | `password123` | DB Admin |
-| **Grafana** | `admin` | `admin` *(o tu `.env` password)* | Administrador de Monitoreo |
-| **SonarQube** | `admin` | `admin` *(pedirá cambiar al primer inicio)* | Servidor de Análisis Estático |
-
----
-
 ## 🛡️ Medidas de Seguridad Implementadas
 
 Este proyecto no es solo funcional, sino que está protegido bajo estándares profesionales de desarrollo web seguro en el backend (`server.js`):
