@@ -1,6 +1,8 @@
 /**
  * DracoTech Reparaciones - Backend Setup
  */
+require('./tracing');
+const http = require('http');
 const express = require('express');
 const { Pool } = require('pg');
 const fs = require('fs');
@@ -15,6 +17,20 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const { body, validationResult } = require('express-validator');
 require('dotenv').config();
+
+function sendLogToLoki(level, msg) {
+  const ts = (Date.now() * 1000000).toString();
+  const data = JSON.stringify({ streams: [{ stream: { job: 'api-web', app: 'api-web', level, service_name: 'api-web' }, values: [[ts, msg]] }] });
+  const req = http.request({ hostname: 'loki-service', port: 3100, path: '/loki/api/v1/push', method: 'POST', headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) } });
+  req.on('error', () => {});
+  req.write(data);
+  req.end();
+}
+
+const origLog = console.log;
+const origError = console.error;
+console.log = (...args) => { origLog.apply(console, args); sendLogToLoki('info', args.join(' ')); };
+console.error = (...args) => { origError.apply(console, args); sendLogToLoki('error', args.join(' ')); };
 
 const app = express();
 const port = 3000;
