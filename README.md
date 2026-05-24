@@ -2,7 +2,7 @@
 
 ¡Bienvenido al repositorio de **DracoTech Reparaciones**! Este proyecto es un portal web dinámico y profesional diseñado para gestionar servicios técnicos, repuestos y control de acceso de usuarios. 
 
-El proyecto cuenta con una arquitectura moderna que integra un backend seguro en **Node.js (Express)**, una base de datos **PostgreSQL**, un ecosistema de observabilidad con **Prometheus y Grafana**, análisis de calidad con **SonarQube**, y una infraestructura automatizada lista para entornos Kubernetes mediante **Terraform y Argo CD (GitOps)**.
+El proyecto cuenta con una arquitectura moderna que integra un backend seguro en **Node.js (Express)**, una base de datos **PostgreSQL**, un ecosistema de observabilidad completo con **Prometheus, Grafana, Loki (logs) y Tempo (trazas)**, análisis de calidad con **SonarQube**, y una infraestructura automatizada lista para entornos Kubernetes mediante **Terraform y Argo CD (GitOps)**.
 
 ---
 
@@ -18,7 +18,11 @@ graph TD
     
     subgraph Ecosistema de Observabilidad
         Prometheus[Prometheus: Puerto 9090] -->|Scrape /metrics| App
+        Loki[Loki: Puerto 3100] -->|Recibe logs via HTTP| App
+        Tempo[Tempo: Puerto 4318] -->|Recibe trazas OTLP| App
         Grafana[Grafana: Puerto 3001] -->|Query Metrics| Prometheus
+        Grafana -->|Query Logs| Loki
+        Grafana -->|Query Traces| Tempo
     end
 
     subgraph Calidad de Código
@@ -26,10 +30,14 @@ graph TD
     end
 
     subgraph GitOps & Infraestructura
-        ArgoCD[Argo CD] -->|Despliega Manifiestos| K8s[Kubernetes Cluster]
+        ArgoCD[Argo CD: Puerto 30170] -->|Despliega Manifiestos| K8s[Kubernetes Cluster]
         Terraform[Terraform] -->|Provisiona Namespace / Recursos| K8s
         K8s -->|Ejecuta Pods| App
         K8s -->|Ejecuta Pods| DB
+        K8s -->|Ejecuta Pods| Grafana
+        K8s -->|Ejecuta Pods| Prometheus
+        K8s -->|Ejecuta Pods| Loki
+        K8s -->|Ejecuta Pods| Tempo
     end
 ```
 
@@ -96,6 +104,8 @@ Esta es la forma más fácil y rápida de ejecutar todo el ecosistema con un sol
    *   **📊 Prometheus Metrics:** [http://localhost:9090](http://localhost:9090)
    *   **📈 Grafana Dashboards:** [http://localhost:3001](http://localhost:3001) *(Dashboard de Node.js pre-provisionado)*
    *   **🔍 SonarQube Server:** [http://localhost:9000](http://localhost:9000)
+   *   **📝 Loki (Logs):** [http://localhost:3100](http://localhost:3100)
+   *   **⏱️ Tempo (Trazas):** [http://localhost:3200](http://localhost:3200)
 
 4. Para detener todos los contenedores y conservar los volúmenes de datos:
    ```bash
@@ -135,7 +145,7 @@ Si deseas modificar el código del backend o frontend en tiempo real sin tener q
 
 ### 📊 Monitoreo y Simulación de Tráfico Activo
 
-Una vez que el proyecto esté corriendo (con el Método 1 o el Método 2), puedes probar las herramientas de monitoreo (Prometheus & Grafana) simulando tráfico continuo de usuarios.
+Una vez que el proyecto esté corriendo (con el Método 1 o el Método 2), puedes probar las herramientas de monitoreo (Prometheus, Grafana, Loki y Tempo) simulando tráfico continuo de usuarios.
 
 1. Abre una nueva terminal en la raíz del proyecto y ejecuta el generador de tráfico sintético:
    ```bash
@@ -146,15 +156,17 @@ Una vez que el proyecto esté corriendo (con el Método 1 o el Método 2), puede
 2. Ingresa a **Grafana** ([http://localhost:3001](http://localhost:3001)):
    *   **Usuario:** `admin` | **Contraseña:** la que definiste en `.env` (por defecto `admin`).
    *   Dirígete a la sección de **Dashboards** y selecciona el panel **"Node.js Metrics Dashboard"** pre-provisionado. Verás gráficos interactivos en tiempo real que detallan las peticiones HTTP y el estado del servidor.
+   *   Explora **Explore > Loki** para ver los logs del backend en tiempo real.
+   *   Explora **Explore > Tempo** para buscar y visualizar trazas de las peticiones.
 
 ---
 
 ### ☸️ Método 3: Despliegue en Kubernetes (Entorno de Producción)
 
-El proyecto incluye manifiestos de Kubernetes en la carpeta `k8s/` para desplegar la base de datos (con almacenamiento persistente PVC), el backend, Grafana y Prometheus.
+El proyecto incluye manifiestos de Kubernetes en la carpeta `k8s/` para desplegar la base de datos (con almacenamiento persistente PVC), el backend, Grafana, Prometheus, Loki y Tempo, desplegados y gestionados mediante Argo CD.
 
 1. Asegúrate de estar conectado a tu clúster de Kubernetes (`kubectl cluster-info`).
-2. Crea el namespace del proyecto y aplica todos los manifiestos:
+2. Si no usas Argo CD, aplica los manifiestos directamente:
    ```bash
    kubectl create namespace cide-app
    kubectl apply -f k8s/ -n cide-app
@@ -164,12 +176,30 @@ El proyecto incluye manifiestos de Kubernetes en la carpeta `k8s/` para desplega
    kubectl get all -n cide-app
    ```
 
+**Servicios disponibles en Kubernetes:**
+| Servicio | Puerto | Descripción |
+|---|---|---|
+| `api-web` | NodePort 30000 | Portal web + API |
+| `grafana-service` | NodePort 30001 | Dashboards (metrics, logs, traces) |
+| `prometheus-service` | NodePort 30090 | Métricas |
+| `loki-service` | ClusterIP 3100 | Agregación de logs |
+| `tempo-service` | ClusterIP 3200 | Almacenamiento de trazas |
+
 ---
 
 ### 🤖 Método 4: Infraestructura y Despliegue con Terraform + Argo CD (GitOps)
 
-Si cuentas con una instalación de **Argo CD** en tu clúster de Kubernetes, puedes automatizar todo el aprovisionamiento y despliegue continuo mediante Terraform:
+El proyecto incluye **Argo CD** instalado en el clúster para la gestión automatizada de despliegues (GitOps). La aplicación `api-web` se sincroniza automáticamente desde la rama `master` del repositorio.
 
+**Acceso a Argo CD:**
+- **URL:** `http://localhost:30170`
+- **Usuario:** `admin`
+- **Contraseña:** obtener con:
+  ```bash
+  kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+  ```
+
+**Si deseas aprovisionar desde cero con Terraform:**
 1. Ve a la carpeta de Terraform:
    ```bash
    cd terraform
@@ -185,6 +215,46 @@ Si cuentas con una instalación de **Argo CD** en tu clúster de Kubernetes, pue
 4. Abre la consola de Argo CD para ver cómo se sincronizan automáticamente los manifiestos de la carpeta `k8s/` de tu repositorio de Git.
 
 ---
+
+## 📊 Observabilidad: Métricas, Logs y Trazas
+
+El stack de observabilidad está compuesto por cuatro componentes integrados:
+
+### 📈 Prometheus — Métricas
+Recolecta métricas del backend (requests HTTP, uso de recursos) vía el endpoint `/metrics`. Las métricas están disponibles para consulta en Grafana.
+
+### 📝 Loki — Logs Centralizados
+El backend envía automáticamente todos los `console.log` y `console.error` al servicio Loki mediante HTTP. Puedes consultar los logs en tiempo real desde Grafana (**Explore > Loki**) usando queries como:
+```
+{job="api-web", level="info"}
+{job="api-web", level="error"}
+```
+
+### ⏱️ Tempo — Trazas Distribuidas
+Cada petición HTTP al backend es instrumentada automáticamente con **OpenTelemetry** y enviada a Tempo. Las trazas incluyen:
+- Tiempo de respuesta por ruta
+- Headers de la petición
+- Código de estado HTTP
+- Relación entre servicios (Express middlewares, llamadas HTTP)
+
+Busca trazas desde Grafana (**Explore > Tempo**) o consulta directa:
+```
+curl http://localhost:3200/api/search?service.name=api-web
+```
+
+### 📋 Configuración de Monitoreo
+Los archivos de configuración de monitoreo se encuentran en la carpeta `grafana/`:
+```
+grafana/
+├── prometheus.yml              # Configuración de Prometheus
+├── tempo-config.yaml           # Configuración de Tempo
+└── provisioning/
+    ├── dashboards/
+    │   ├── dashboard.yml       # Provider de dashboards
+    │   └── nodejs.json         # Dashboard predefinido de Node.js
+    └── datasources/
+        └── datasource.yml      # Fuentes de datos (Prometheus, Loki, Tempo)
+```
 
 ## 🛡️ Medidas de Seguridad Implementadas
 
